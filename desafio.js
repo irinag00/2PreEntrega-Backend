@@ -1,5 +1,27 @@
-class ProductManager {
+class Product {
   static countIdProduct = 1;
+
+  constructor({ title, description, price, thumbnail, code, stock }) {
+    if (
+      !title ||
+      !description ||
+      !(price > 0) ||
+      !thumbnail ||
+      !code ||
+      !(stock >= 0)
+    ) {
+      throw new Error(" *ERROR* Los campos son obligatorios.");
+    }
+    this.id = Product.countIdProduct++;
+    this.title = title;
+    this.description = description;
+    this.price = price;
+    this.thumbnail = thumbnail;
+    this.code = code;
+    this.stock = stock;
+  }
+}
+class ProductManager {
   constructor() {
     this.products = [];
   }
@@ -23,34 +45,13 @@ class ProductManager {
   }
 
   addProduct(product) {
-    if (
-      !product.title ||
-      !product.description ||
-      !product.price ||
-      !product.thumbnail ||
-      !product.code ||
-      !product.stock
-    ) {
-      console.error(" *ERROR* Los campos son obligatorios.");
-      return;
+    try {
+      const newProduct = new Product(product);
+      this.products.push(newProduct);
+      console.log("Producto agregado con éxito!");
+    } catch (error) {
+      console.error("Error al agregar el producto: ", error.message);
     }
-    const exist = this.products.some((p) => p.code === product.code);
-    if (exist) {
-      console.error(" *ERROR* El código de producto ya existe.");
-      return;
-    }
-    const { title, description, price, thumbnail, code, stock } = product;
-    const newProduct = {
-      id: ProductManager.countIdProduct++,
-      title,
-      description,
-      price,
-      thumbnail,
-      code,
-      stock,
-    };
-    this.products.push(newProduct);
-    console.log("Producto agregado con éxito!");
   }
 }
 
@@ -66,9 +67,9 @@ const firstProduct = {
   stock: 25,
 };
 
-console.log(productManager.addProduct(firstProduct));
-console.log(productManager.getProducts());
-console.log(productManager.addProduct(firstProduct));
-console.log(productManager.getProductsById(10));
-console.log(productManager.getProductsById(1));
-console.log(productManager.getProductsById());
+// console.log(productManager.addProduct(firstProduct));
+// console.log(productManager.getProducts());
+// console.log(productManager.addProduct(firstProduct));
+// console.log(productManager.getProductsById(10));
+// console.log(productManager.getProductsById(1));
+// console.log(productManager.getProductsById());

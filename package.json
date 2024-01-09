@@ -1,0 +1,12 @@
+{
+  "name": "primer-desafio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "desafio.js",
+  "scripts": {
+    "start": "nodemon desafio.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
