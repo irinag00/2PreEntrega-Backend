@@ -1,14 +1,11 @@
 class ProductManager {
+  static countIdProduct = 1;
   constructor() {
     this.products = [];
   }
 
   getProducts() {
-    console.log("Productos disponibles: ");
-    console.log(this.products);
-    console.log(
-      "-------------------------------------------------------------------------------"
-    );
+    return [...this.products];
   }
 
   getProductsById(id) {
@@ -18,13 +15,10 @@ class ProductManager {
     }
     const productFind = this.products.find((product) => product.id === id);
     if (productFind) {
-      console.log("Producto seleccionado: ");
-      console.log(productFind);
-      console.log(
-        "-------------------------------------------------------------------------------"
-      );
+      return productFind;
     } else {
       console.log("*ERROR* Not Found.");
+      return;
     }
   }
 
@@ -47,7 +41,7 @@ class ProductManager {
     }
     const { title, description, price, thumbnail, code, stock } = product;
     const newProduct = {
-      id: this.products.length + 1,
+      id: ProductManager.countIdProduct++,
       title,
       description,
       price,
@@ -61,7 +55,7 @@ class ProductManager {
 }
 
 const productManager = new ProductManager();
-productManager.getProducts();
+console.log(productManager.getProducts());
 
 const firstProduct = {
   title: "producto prueba",
@@ -71,9 +65,10 @@ const firstProduct = {
   code: "abc123",
   stock: 25,
 };
-productManager.addProduct(firstProduct);
-productManager.getProducts();
-productManager.addProduct(firstProduct);
-productManager.getProductsById(10);
-productManager.getProductsById(1);
-productManager.getProductsById();
+
+console.log(productManager.addProduct(firstProduct));
+console.log(productManager.getProducts());
+console.log(productManager.addProduct(firstProduct));
+console.log(productManager.getProductsById(10));
+console.log(productManager.getProductsById(1));
+console.log(productManager.getProductsById());
