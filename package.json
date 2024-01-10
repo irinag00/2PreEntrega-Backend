@@ -4,7 +4,7 @@
   "description": "",
   "main": "desafio.js",
   "scripts": {
-    "start": "nodemon desafio.js"
+    "start": "node --watch desafio.js"
   },
   "keywords": [],
   "author": "",
