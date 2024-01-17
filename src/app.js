@@ -24,7 +24,9 @@ app.get("/products/:pid", async (req, res) => {
     if (product) {
       res.json(product);
     } else {
-      res.status(404).send("No se encontró el producto con el id elegido.");
+      res
+        .status(404)
+        .send({ error: "No se encontró el producto con el id elegido." });
     }
   } catch (error) {
     res.status(500).send("Error interno en el servidor.");
