@@ -135,7 +135,7 @@ class ProductManager {
     }
   }
 }
-const path = "products.json";
+const path = "desafio/products.json";
 const productManager = new ProductManager(path);
 const myProducts = productManager.getProducts();
 
