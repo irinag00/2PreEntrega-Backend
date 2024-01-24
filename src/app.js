@@ -1,36 +1,18 @@
 import express from "express";
-import { ProductManager } from "./desafio.js";
+import { ProductManager } from "./ProductManager.js";
+import routerProducts from "./routers/products.router.js";
 
-const path = "src/products.json";
-const PORT = 8080;
-const productManager = new ProductManager(path);
 const app = express();
+const PORT = 8080;
 
-app.get("/products", async (req, res) => {
-  try {
-    const limit = req.query.limit ? parseInt(req.query.limit, 10) : undefined;
-    const products = await productManager.getProducts();
-    const limitedProducts = limit ? products.slice(0, limit) : products;
-    res.json(limitedProducts);
-  } catch (error) {
-    res.status(500).send("Error interno en el servidor.");
-  }
-});
+const pathProducts = "./src/data/products.json";
+export const productManager = new ProductManager(pathProducts);
 
-app.get("/products/:pid", async (req, res) => {
-  const productId = parseInt(req.params.pid);
-  try {
-    const product = await productManager.getProductsById(productId);
-    if (product) {
-      res.json(product);
-    } else {
-      res
-        .status(404)
-        .send({ error: "No se encontró el producto con el id elegido." });
-    }
-  } catch (error) {
-    res.status(500).send("Error interno en el servidor.");
-  }
-});
+//middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+//routes
+app.use("/api/products", routerProducts);
 
 app.listen(PORT, () => console.log("Servidor con express en puesto: ", PORT));
