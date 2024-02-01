@@ -1,9 +1,9 @@
 const socket = io();
 
 socket.on("products", (products) => {
-  console.log(products);
   const productsContainter = document.getElementById("table");
-  productsContainter.innerHTML = `
+  if (productsContainter) {
+    productsContainter.innerHTML = `
     <tr>
         <th>Id</th>
         <th>Título</th>
@@ -14,9 +14,9 @@ socket.on("products", (products) => {
         <th>Stock</th>
         <th>Imágenes</th>
     </tr>
-    `;
-  products.forEach((product) => {
-    productsContainter.innerHTML += `
+  `;
+    products.forEach((product) => {
+      productsContainter.innerHTML += `
         <tr>
             <td>${product.id}</td>
             <td>${product.title}</td>
@@ -28,7 +28,8 @@ socket.on("products", (products) => {
             <td>${product.thumbnail}</td>
         </tr>
         `;
-  });
+    });
+  }
 });
 
 document.getElementById("addProduct").addEventListener("submit", (event) => {
@@ -55,6 +56,7 @@ document.getElementById("addProduct").addEventListener("submit", (event) => {
   ) {
     // Mostrar un mensaje de error o realizar alguna acción en caso de datos inválidos
     console.error("Por favor, complete todos los campos correctamente.");
+
     return;
   }
 
@@ -80,7 +82,6 @@ document.getElementById("deleteProduct").addEventListener("submit", (event) => {
 
   // Realizar validaciones
   if (!pId || isNaN(pId)) {
-    // Mostrar un mensaje de error
     console.error("Por favor, ingrese un Id de producto válido.");
     return;
   }
@@ -88,15 +89,23 @@ document.getElementById("deleteProduct").addEventListener("submit", (event) => {
   // Emitir el evento si el Id es válido
   socket.emit("delete-product", pId);
 
-  // Limpiar el formulario
   event.target.reset();
 });
 
 socket.on("response", (response) => {
   const responseContainer = document.getElementById("responseContainer");
   if (response.status === "success") {
-    responseContainer.innerHTML = `<p class="success">${response.message}</p>`;
+    if (response.product) {
+      const productDetails = response.product;
+      const successMessage = `<p class="success">Producto agregado con éxito. Detalles: ${JSON.stringify(
+        productDetails
+      )}</p>`;
+      responseContainer.innerHTML = successMessage;
+    } else {
+      responseContainer.innerHTML = `<p class="success">${response.message}</p>`;
+    }
   } else {
     responseContainer.innerHTML = `<p class="error">${response.message}</p>`;
+    console.error(response.error);
   }
 });

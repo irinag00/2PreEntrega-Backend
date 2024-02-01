@@ -56,9 +56,8 @@
       <div>
         <label for="status">Estado</label>
         <select id="status" name="status">
-          {{#each statusOptions}}
-            <option value="{{this.value}}">{{this.label}}</option>
-          {{/each}}
+          <option value="true">True</option>
+          <option value="false">False</option>
         </select>
       </div>
       <div>
@@ -80,6 +79,8 @@
       </div>
       <button type="submit">Eliminar</button>
     </form>
+
+    <div id="responseContainer"></div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/index.js"></script>

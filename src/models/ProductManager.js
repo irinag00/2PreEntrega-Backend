@@ -72,7 +72,7 @@ export class ProductManager {
     //evaluo si existe el codigo de producto
     if (this.products.some((p) => p.code === product.code)) {
       console.log("El producto ya existe");
-      return;
+      throw new Error("El producto ya existe.");
     }
     //establezco el id
     this.setLastId();
@@ -105,6 +105,7 @@ export class ProductManager {
       await this.saveProducts();
     } else {
       console.error("No se encontró el producto con el ID proporcionado: ", id);
+      throw new Error("No se encontró el producto con el ID proporcionado.");
     }
   }
 

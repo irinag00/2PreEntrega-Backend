@@ -4,11 +4,11 @@ import { productManager } from "./app.js";
 export const initializeSocket = (server) => {
   const socketServer = new Server(server);
 
-  socketServer.on("connection", (socket) => {
+  socketServer.on("connection", async (socket) => {
     console.log("Nueva conexión");
 
     try {
-      const products = productManager.getProducts();
+      const products = await productManager.getProducts();
       socket.emit("products", products);
     } catch (error) {
       socket.emit("response", { status: "error", message: error.message });
@@ -26,11 +26,12 @@ export const initializeSocket = (server) => {
           thumbnail: newProduct.thumbnail,
         };
         const pushProduct = await productManager.addProduct(addNewProduct);
-        const updatedListProd = await productManager.getProducts();
-        socketServer.emit("products", updatedListProd);
+        const updatedProduct = await productManager.getProducts();
+        socketServer.emit("products", updatedProduct);
         socketServer.emit("response", {
           status: "success",
-          message: pushProduct,
+          message: "Producto agregado con éxito!",
+          product: addNewProduct,
         });
       } catch (error) {
         socketServer.emit("response", {
@@ -48,7 +49,7 @@ export const initializeSocket = (server) => {
         socketServer.emit("products", updatedProduct);
         socketServer.emit("response", {
           status: "success",
-          message: "Producto eliminado con éxito",
+          message: "Producto eliminado con éxito!",
         });
       } catch (error) {
         socketServer.emit("response", {
