@@ -1,0 +1,38 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Productos</title>
+  </head>
+  <body>
+    <h1>Lista de productos</h1>
+    <table>
+      <thead>
+        <tr>
+          <td>Id</td>
+          <td>Título</td>
+          <td>Descripción</td>
+          <td>Código</td>
+          <td>Precio</td>
+          <td>Status</td>
+          <td>Stock</td>
+          <td>Imágenes</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+          <tr>
+            <td>{{this.id}}</td>
+            <td>{{title}}</td>
+            <td>{{description}}</td>
+            <td>{{code}}</td>
+            <td>${{price}}</td>
+            <td>{{status}}</td>
+            <td>{{stock}}</td>
+            <td>{{thumbnail}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </body>
+</html>

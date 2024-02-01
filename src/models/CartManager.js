@@ -1,5 +1,5 @@
 import fs from "fs";
-import { productManager } from "./app.js";
+import { productManager } from "../app.js";
 
 export class CartManager {
   static countIdCart = 1;

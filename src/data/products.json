@@ -4,7 +4,7 @@
     "title": "Alfajor TOFI blanco",
     "description": "Triple galletita rellena de dulce de leche con cobertura de chocolate blanco",
     "price": 1200,
-    "thumbnails": [
+    "thumbnail": [
       "https://example.com/tofiBlanco.jpg",
       "https://example.com/tofiBlanco2.jpg"
     ],
@@ -22,7 +22,8 @@
       "https://example.com/tofiNegro2.jpg"
     ],
     "code": "abcd123",
-    "stock": 20
+    "stock": 20,
+    "status": "true"
   },
   {
     "id": 3,
@@ -73,19 +74,6 @@
       "https://example.com/guaymallenFruta2.jpg"
     ],
     "code": "abc1237",
-    "stock": 45,
-    "status": "false"
-  },
-  {
-    "id": 7,
-    "title": "Alfajor Aguila Coco",
-    "description": "Triple galletita relleno de coco rallado y vainilla con cobertura de chocolate blanco",
-    "price": 2000,
-    "thumbnail": [
-      "https://example.com/aguilaCoco.jpg",
-      "https://example.com/aguilaCoco2.jpg"
-    ],
-    "code": "12345",
     "stock": 45,
     "status": "false"
   },
