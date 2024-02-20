@@ -7,6 +7,7 @@ import routerProducts from "./routers/viewProduct.router.js";
 import routerRealTime from "./routers/realTimeProducts.router.js";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
+import mongoose from "mongoose";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -30,6 +31,16 @@ app.use("/", routerRealTime);
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
+
+//connection mongo atlas
+
+// mongoose
+//   .connect(
+//     "mongodb+srv://adminCoder:hola123@codercluster.cxl0ika.mongodb.net/ecommerce?retryWrites=true&w=majority"
+//   )
+//   .then(() => {
+//     console.log("Conexión a la base de datos inicializada!");
+//   });
 
 //connection socket.io
 
