@@ -1,10 +1,10 @@
 import express from "express";
 import path from "path";
-import { ProductManager } from "./models/ProductManager.js";
+import { ProductManager } from "./dao/class/ProductManager.js";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import routerProducts from "./routers/viewProduct.router.js";
-import routerRealTime from "./routers/realTimeProducts.router.js";
+import routerProducts from "./dao/fs/viewProduct.router.js";
+import routerRealTime from "./dao/fs/realTimeProducts.router.js";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 import mongoose from "mongoose";

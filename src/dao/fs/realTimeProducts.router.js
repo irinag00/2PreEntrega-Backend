@@ -1,6 +1,6 @@
 import express from "express";
-import { productManager } from "../app.js";
-import { socketServer } from "../app.js";
+import { productManager } from "../../app.js";
+import { socketServer } from "../../app.js";
 
 const router = express.Router();
 
