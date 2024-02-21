@@ -38,7 +38,7 @@ chatBox.addEventListener("keyup", (evt) => {
 /* SOCKET LISTENERS */
 socket.on("messageLogs", (data) => {
   let messages = "";
-  console.log(data);
+  //evaluo si es un array, ya que cuando hace la primer llamda a la base de datos es array, y cuando se agrega un mensje nuevo, se convierte en un objeto.
   if (Array.isArray(data)) {
     data.forEach((chat) => {
       messages =
@@ -54,7 +54,7 @@ socket.on("messageLogs", (data) => {
   messageLogs.innerHTML = messages;
 });
 
-//Alert new user conected
+//nuevo usuario conectado (en una incógnita por ej)
 socket.on("newUserConnected", () => {
   Swal.fire({
     text: "Nuevo usuario conectado",

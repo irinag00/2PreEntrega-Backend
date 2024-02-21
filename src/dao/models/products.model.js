@@ -9,6 +9,7 @@ const productsSchema = new mongoose.Schema({
   code: { type: Number, required: true, unique: true },
   stock: { type: Number, required: true },
   status: { type: String, required: true },
+  category: { type: String, required: true },
 });
 
 export const productModel = mongoose.model(productsCollection, productsSchema);

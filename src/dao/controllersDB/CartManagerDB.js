@@ -1,5 +1,5 @@
-import { cartModel } from "../models/cart.model";
-import { productModel } from "../models/products.model.";
+import { cartModel } from "../models/cart.model.js";
+import { productModel } from "../models/products.model.js";
 
 export class CartManagerDB {
   constructor() {
@@ -24,6 +24,18 @@ export class CartManagerDB {
     }
   }
 
+  async addCart() {
+    try {
+      const newCart = {
+        products: [],
+      };
+      return await this.model.create(newCart);
+    } catch (error) {
+      console.error("Error al agregar los productos a un nuevo carrito", error);
+      throw error;
+    }
+  }
+
   async addToCart(cid, pid) {
     try {
       let cartExist = await this.model.findOne({ _id: cid });
@@ -31,14 +43,6 @@ export class CartManagerDB {
 
       if (!productExist) {
         throw new Error(`No se encontró el producto con id ${pid}`);
-      }
-
-      //si el carrito no existe, creo uno nuevo
-      if (!cartExist) {
-        const newCart = {
-          products: [],
-        };
-        return (cartExist = await this.model.create(newCart));
       }
 
       const existingProduct = cartExist.product.find(
@@ -64,10 +68,10 @@ export class CartManagerDB {
     }
   }
 
-  async deleteProductToCart(pid, cid) {
+  async deleteProductToCart(cid, pid) {
     try {
       //busco id de carrito
-      const cart = await this.model.findById(cid);
+      const cart = await this.model.findOne({ _id: cid });
       if (!cart) {
         throw new Error(`No se encontró el carrito con id ${cid}`);
       }
@@ -82,11 +86,34 @@ export class CartManagerDB {
         );
       }
 
-      cart.product.splice(productIndex, 1);
+      const existingProduct = cart.product.find(
+        (product) => product.productId.toString() === pid.toString()
+      );
+
+      if (existingProduct.quantity > 1) {
+        existingProduct.quantity--;
+      } else {
+        cart.product.splice(productIndex, 1);
+      }
+
       await cart.save();
       return "Producto eliminado exitosamente del carrito";
     } catch (error) {
       console.error("Error al eliminar el producto del carrito:", error);
+      throw error;
+    }
+  }
+
+  async deleteCart(cid) {
+    try {
+      // Busco el carrito por su id y lo elimino
+      const cart = await this.model.findOneAndDelete({ _id: cid });
+      if (!cart) {
+        throw new Error(`No se encontró el carrito con id ${cid}`);
+      }
+      return "Carrito eliminado exitosamente";
+    } catch (error) {
+      console.error("Error al eliminar el carrito:", error);
       throw error;
     }
   }
