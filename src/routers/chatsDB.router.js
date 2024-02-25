@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { ChatManagerDB } from "../dao/controllersDB/ChatManagerDB.js";
+import { ChatManagerDB } from "../dao/managerDB/ChatManagerDB.js";
 
 const chatRouter = Router();
 const chatManager = new ChatManagerDB();

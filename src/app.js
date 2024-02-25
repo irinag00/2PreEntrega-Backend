@@ -6,7 +6,7 @@ import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
 import chatRouter from "./routers/chatsDB.router.js";
-import { ChatManagerDB } from "./dao/controllersDB/ChatManagerDB.js";
+import { ChatManagerDB } from "./dao/managerDB/ChatManagerDB.js";
 import { chatModel } from "./dao/models/chats.model.js";
 import productRouter from "./routers/productsDB.router.js";
 import cartRouter from "./routers/cartsDB.router.js";
