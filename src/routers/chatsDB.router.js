@@ -4,11 +4,11 @@ import { ChatManagerDB } from "../dao/controllersDB/ChatManagerDB.js";
 const chatRouter = Router();
 const chatManager = new ChatManagerDB();
 
-chatRouter.get("/chat", async (req, res) => {
+chatRouter.get("/", async (req, res) => {
   res.render("chat.handlebars");
 });
 
-chatRouter.post("/chat", async (req, res) => {
+chatRouter.post("/", async (req, res) => {
   const { user, message } = req.body;
   if (!user || !message) {
     throw new Error("User and message are required");

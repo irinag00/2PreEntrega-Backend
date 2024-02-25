@@ -25,9 +25,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/public")));
 
 //routes
-app.use("/api/", chatRouter);
-app.use("/api/", productRouter);
-app.use("/api/", cartRouter);
+app.use("/api/chat/", chatRouter);
+app.use("/api/products/", productRouter);
+app.use("/api/carts/", cartRouter);
 
 //config handlebars
 app.engine("handlebars", handlebars.engine());

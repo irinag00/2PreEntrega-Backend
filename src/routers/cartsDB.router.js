@@ -4,7 +4,7 @@ import { CartManagerDB } from "../dao/controllersDB/CartManagerDB.js";
 const cartRouter = Router();
 const cartManager = new CartManagerDB();
 
-cartRouter.get("/cart", async (req, res) => {
+cartRouter.get("/", async (req, res) => {
   try {
     let result = await cartManager.getCarts();
     res.status(200).send({ result: "success", payload: result });
@@ -15,7 +15,7 @@ cartRouter.get("/cart", async (req, res) => {
   }
 });
 
-cartRouter.get("/cart/:cid", async (req, res) => {
+cartRouter.get("/:cid", async (req, res) => {
   const { cid } = req.params;
   try {
     let result = await cartManager.getCartById(cid);
@@ -26,7 +26,7 @@ cartRouter.get("/cart/:cid", async (req, res) => {
 });
 
 //para crear un carrito vacío
-cartRouter.post("/cart", async (req, res) => {
+cartRouter.post("/", async (req, res) => {
   try {
     let result = await cartManager.addCart();
     res.status(200).send({ result: "success", payload: result });
@@ -36,7 +36,7 @@ cartRouter.post("/cart", async (req, res) => {
 });
 
 //añado productos al carrito, según id de producto (agrega de a 1 quantity)
-cartRouter.post("/cart/:cid/:pid", async (req, res) => {
+cartRouter.post("/:cid/:pid", async (req, res) => {
   const { cid, pid } = req.params;
   try {
     let result = await cartManager.addToCart(cid, pid);
@@ -49,7 +49,7 @@ cartRouter.post("/cart/:cid/:pid", async (req, res) => {
 });
 
 //elimina segun id de producto y según el id de carrito, elimina de a 1 quantity
-cartRouter.delete("/cart/:cid/:pid", async (req, res) => {
+cartRouter.delete("/:cid/:pid", async (req, res) => {
   const { cid, pid } = req.params;
   try {
     let result = await cartManager.deleteProductToCart(cid, pid);
@@ -62,7 +62,7 @@ cartRouter.delete("/cart/:cid/:pid", async (req, res) => {
 });
 
 //elimina el carrito completo
-cartRouter.delete("/cart/:cid", async (req, res) => {
+cartRouter.delete("/:cid", async (req, res) => {
   const { cid } = req.params;
   try {
     let result = await cartManager.deleteCart(cid);

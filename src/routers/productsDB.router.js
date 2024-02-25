@@ -4,7 +4,7 @@ import { ProductManagerDB } from "../dao/controllersDB/ProductManagerDB.js";
 const productRouter = Router();
 const productManager = new ProductManagerDB();
 
-productRouter.get("/products", async (req, res) => {
+productRouter.get("/", async (req, res) => {
   try {
     let result = await productManager.getProducts();
     res.status(200).send({ result: "success", payload: result });
@@ -15,7 +15,7 @@ productRouter.get("/products", async (req, res) => {
   }
 });
 
-productRouter.get("/products/:pid", async (req, res) => {
+productRouter.get("/:pid", async (req, res) => {
   const { pid } = req.params;
   try {
     let result = await productManager.getProductById(pid);
@@ -27,7 +27,7 @@ productRouter.get("/products/:pid", async (req, res) => {
   }
 });
 
-productRouter.post("/products", async (req, res) => {
+productRouter.post("/", async (req, res) => {
   const newProduct = req.body;
   try {
     let result = await productManager.addProduct(newProduct);
@@ -39,7 +39,7 @@ productRouter.post("/products", async (req, res) => {
   }
 });
 
-productRouter.put("/products/:pid", async (req, res) => {
+productRouter.put("/:pid", async (req, res) => {
   const { pid } = req.params;
   const updatedProduct = req.body;
   try {
@@ -52,7 +52,7 @@ productRouter.put("/products/:pid", async (req, res) => {
   }
 });
 
-productRouter.delete("/products/:pid", async (req, res) => {
+productRouter.delete("/:pid", async (req, res) => {
   const { pid } = req.params;
   try {
     let result = await productManager.deleteProduct(pid);
