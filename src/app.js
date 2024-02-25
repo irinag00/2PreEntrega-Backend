@@ -67,7 +67,8 @@ socketServer.on("connection", async (socket) => {
     const { user, message } = data;
     try {
       await chatManager.addChat(user, message);
-      socketServer.emit("messageLogs", { user, message });
+      const messages = await chatModel.find();
+      socketServer.emit("messageLogs", messages);
     } catch (error) {
       console.error("Error al procesar el mensaje del chat:", error);
     }

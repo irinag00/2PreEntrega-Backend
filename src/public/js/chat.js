@@ -38,18 +38,10 @@ chatBox.addEventListener("keyup", (evt) => {
 /* SOCKET LISTENERS */
 socket.on("messageLogs", (data) => {
   let messages = "";
-  //evaluo si es un array, ya que cuando hace la primer llamda a la base de datos es array, y cuando se agrega un mensje nuevo, se convierte en un objeto.
-  if (Array.isArray(data)) {
-    data.forEach((chat) => {
-      messages =
-        messages + `${chat.user} dice: <strong>${chat.message} </strong></br>`;
-    });
-  } else {
-    data.messages.forEach((chat) => {
-      messages =
-        messages + `${chat.user} dice: <strong>${chat.message} </strong></br>`;
-    });
-  }
+  data.forEach((chat) => {
+    messages =
+      messages + `${chat.user} dice: <strong>${chat.message} </strong></br>`;
+  });
 
   messageLogs.innerHTML = messages;
 });
