@@ -1,0 +1,56 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products</title>
+  </head>
+  <body>
+    <h1>Lista de productos</h1>
+    <table>
+      <thead>
+        <tr>
+          <td>Id</td>
+          <td>Título</td>
+          <td>Descripción</td>
+          <td>Código</td>
+          <td>Precio</td>
+          <td>Status</td>
+          <td>Stock</td>
+          <td>Imágenes</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+          <tr>
+            <td>{{_id}}</td>
+            <td>{{title}}</td>
+            <td>{{description}}</td>
+            <td>{{code}}</td>
+            <td>${{price}}</td>
+            <td>{{status}}</td>
+            <td>{{stock}}</td>
+            <td>{{thumbnail}}</td>
+            <td>
+              <button class="btnAddToCart" data-product-id="{{_id}}">Agregar al
+                carrito</button>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      {{#if products.hasPrevPage}}
+        <a href={{products.prevLink}}></a>
+      {{/if}}
+
+      <p>{{products.page}} de {{products.totalPages}}</p>
+
+      {{#if products.hasNextPage}}
+        <a href={{products.nextLink}}></a>
+      {{/if}}
+    </div>
+
+    <script src="/js/cart.js"></script>
+  </body>
+</html>

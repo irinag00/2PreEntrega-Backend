@@ -5,11 +5,45 @@ export class ProductManagerDB {
     this.model = productModel;
   }
 
-  async getProducts() {
+  async getProducts(req) {
+    let limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const status = req.query.status ? req.query.status : null;
+    const category = req.query.category ? req.query.category : null;
+    let sort = parseInt(req.query.sort);
+    if (limit > 10) {
+      limit = 10;
+    }
+    const filter = {};
+    if (status) {
+      filter.status = status;
+    }
+    if (category) {
+      filter.category = category;
+    }
+    if (sort === 1 || sort === -1) {
+      sort = { price: sort };
+    } else {
+      sort = null;
+    }
     try {
-      return await this.model.find({});
+      const products = await this.model.paginate(filter, {
+        limit,
+        page,
+        sort,
+        lean: true,
+      });
+      if (page > products.totalPages || page <= 0 || isNaN(page)) {
+        throw new Error("Página inexistente");
+      }
+      products.prevLink =
+        products.page > 1 ? `/products?page=${products.page - 1}` : null;
+      products.nextLink =
+        products.page < products.totalPages
+          ? `/products?page=${products.page + 1}`
+          : null;
+      return products;
     } catch (error) {
-      console.error("Error al mostrar los productos", error);
       throw error;
     }
   }

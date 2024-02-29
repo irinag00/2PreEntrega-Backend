@@ -10,6 +10,7 @@ import { ChatManagerDB } from "./dao/managerDB/ChatManagerDB.js";
 import { chatModel } from "./dao/models/chats.model.js";
 import productRouter from "./routers/productsDB.router.js";
 import cartRouter from "./routers/cartsDB.router.js";
+import { ProductManagerDB } from "./dao/managerDB/ProductManagerDB.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,6 +19,7 @@ const app = express();
 const PORT = 8080;
 
 const chatManager = new ChatManagerDB();
+const productManager = new ProductManagerDB();
 
 //middlewares
 app.use(express.json());
@@ -42,6 +44,9 @@ mongoose
   )
   .then(() => {
     console.log("Conexión a la base de datos inicializada!");
+  })
+  .catch((error) => {
+    console.log("Database connection error", error);
   });
 
 //connection socket.io
@@ -52,32 +57,35 @@ const httpServer = app.listen(PORT, () =>
 
 export const socketServer = new Server(httpServer);
 
-const users = {};
-socketServer.on("connection", async (socket) => {
-  console.log("Nueva conexión - Usuario conectado");
+//Socket io - conexion chat
+// const users = {};
+// socketServer.on("connection", async (socket) => {
+//   console.log("Nueva conexión - Usuario conectado");
 
-  socket.on("userIdentified", async (user) => {
-    users[socket.id] = user;
-    const messages = await chatModel.find();
-    socket.emit("messageLogs", messages);
-    socket.broadcast.emit("newUserConnected");
-  });
+//   socket.on("userIdentified", async (user) => {
+//     users[socket.id] = user;
+//     const messages = await chatModel.find();
+//     socket.emit("messageLogs", messages);
+//     socket.broadcast.emit("newUserConnected");
+//   });
 
-  socket.on("message", async (data) => {
-    const { user, message } = data;
-    try {
-      await chatManager.addChat(user, message);
-      const messages = await chatModel.find();
-      socketServer.emit("messageLogs", messages);
-    } catch (error) {
-      console.error("Error al procesar el mensaje del chat:", error);
-    }
-  });
+//   socket.on("message", async (data) => {
+//     const { user, message } = data;
+//     try {
+//       await chatManager.addChat(user, message);
+//       const messages = await chatModel.find();
+//       socketServer.emit("messageLogs", messages);
+//     } catch (error) {
+//       console.error("Error al procesar el mensaje del chat:", error);
+//     }
+//   });
 
-  socket.on("updateMessages", async () => {
-    const messages = await chatModel.find();
-    socketServer.emit("messageLogs", messages);
+//   socket.on("updateMessages", async () => {
+//     const messages = await chatModel.find();
+//     socketServer.emit("messageLogs", messages);
 
-    socket.broadcast.emit("newUserConnected");
-  });
-});
+//     socket.broadcast.emit("newUserConnected");
+//   });
+// });
+
+//Socket io - conexion realTimeProducts

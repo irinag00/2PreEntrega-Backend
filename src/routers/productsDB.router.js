@@ -6,12 +6,21 @@ const productManager = new ProductManagerDB();
 
 productRouter.get("/", async (req, res) => {
   try {
-    let result = await productManager.getProducts();
-    res.status(200).send({ result: "success", payload: result });
+    const products = await productManager.getProducts(req);
+    res.json({
+      status: "success",
+      payload: products.docs,
+      totalPages: products.totalPages,
+      prevPage: products.prevPage,
+      nextPage: products.nextPage,
+      page: products.page,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
+      prevLink: products.prevLink,
+      nextLink: products.nextLink,
+    });
   } catch (error) {
-    res
-      .status(400)
-      .send({ result: "Error al cargar los productos", message: error });
+    res.status(500).json({ error: error.message });
   }
 });
 

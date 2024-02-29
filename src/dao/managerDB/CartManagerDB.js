@@ -8,7 +8,7 @@ export class CartManagerDB {
 
   async getCarts() {
     try {
-      return await this.model.find({});
+      return await this.model.find({}).populate("products");
     } catch (error) {
       console.error("Error al mostrar los productos", error);
       throw error;

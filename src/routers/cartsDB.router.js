@@ -36,7 +36,7 @@ cartRouter.post("/", async (req, res) => {
 });
 
 //añado productos al carrito, según id de producto (agrega de a 1 quantity)
-cartRouter.post("/:cid/:pid", async (req, res) => {
+cartRouter.post("/:cid/products/:pid", async (req, res) => {
   const { cid, pid } = req.params;
   try {
     let result = await cartManager.addToCart(cid, pid);
@@ -49,7 +49,7 @@ cartRouter.post("/:cid/:pid", async (req, res) => {
 });
 
 //elimina segun id de producto y según el id de carrito, elimina de a 1 quantity
-cartRouter.delete("/:cid/:pid", async (req, res) => {
+cartRouter.delete("/:cid/products/:pid", async (req, res) => {
   const { cid, pid } = req.params;
   try {
     let result = await cartManager.deleteProductToCart(cid, pid);
