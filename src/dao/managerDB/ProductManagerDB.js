@@ -27,7 +27,7 @@ export class ProductManagerDB {
       sort = null;
     }
     try {
-      const products = await this.model.paginate(filter, {
+      const products = await this.model.paginate(...filter, {
         limit,
         page,
         sort,

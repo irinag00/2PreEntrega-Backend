@@ -20,10 +20,10 @@
         </tr>
       </thead>
       <tbody>
-        {{#each products}}
+        {{#each products.docs}}
           <tr>
             <td>{{_id}}</td>
-            <td>{{title}}</td>
+            <td>{{this.title}}</td>
             <td>{{description}}</td>
             <td>{{code}}</td>
             <td>${{price}}</td>
@@ -31,8 +31,11 @@
             <td>{{stock}}</td>
             <td>{{thumbnail}}</td>
             <td>
-              <button class="btnAddToCart" data-product-id="{{_id}}">Agregar al
-                carrito</button>
+              <button
+                id="add-to-cart"
+                data-product-id="{{_id}}"
+                onclick="addProductToCart('{{_id}}')"
+              >Agregar al carrito</button>
             </td>
           </tr>
         {{/each}}
@@ -41,13 +44,13 @@
 
     <div class="pagination">
       {{#if products.hasPrevPage}}
-        <a href={{products.prevLink}}></a>
+        <a href={{products.prevLink}}> << Anterior página  </a>
       {{/if}}
 
       <p>{{products.page}} de {{products.totalPages}}</p>
 
       {{#if products.hasNextPage}}
-        <a href={{products.nextLink}}></a>
+        <a href={{products.nextLink}}> Siguiente página >> </a>
       {{/if}}
     </div>
 
