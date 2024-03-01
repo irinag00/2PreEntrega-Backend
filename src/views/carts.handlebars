@@ -8,12 +8,12 @@
     <h2>Carrito de Compras</h2>
     <div>
       <ul>
-        {{#each cart.product}}
+        {{#each productsDetails}}
           <li>
             <div>
-              <h3>{{product.title}}</h3>
-              <p>{{product.description}}</p>
-              <h6>{{product.price}}</h6>
+              <h3>{{this.title}}</h3>
+              <p>{{this.description}}</p>
+              <h6>{{this.price}}</h6>
               <p>{{quantity}}</p>
             </div>
           </li>

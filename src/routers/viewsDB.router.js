@@ -16,21 +16,22 @@ viewsRouter.get("/products", async (req, res) => {
 });
 
 viewsRouter.get("/carts/:cid", async (req, res) => {
-  const id = req.params.cid;
+  const { cid } = req.params;
   try {
-    const cart = await cartManager.getCartById(id);
-    cart.products = cart.products.map((product) => {
-      return {
-        ...product,
-        total: product.product.price * product.quantity,
+    const cart = await cartManager.getCartById(cid);
+    const productsDetails = [];
+    for (const product of cart.products) {
+      const productDetails = await productModel
+        .findById(product.productId)
+        .lean();
+      const productWithQuantity = {
+        ...productDetails,
+        quantity: product.quantity,
       };
-    });
-    cart.total = cart.products
-      .reduce((acc, product) => acc + product.total, 0)
-      .toFixed(2);
-    res.render("carts", {
-      cart,
-    });
+      productsDetails.push(productWithQuantity);
+    }
+
+    console.log(productsDetails);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
