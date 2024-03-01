@@ -29,7 +29,6 @@ viewsRouter.get("/carts/:cid", async (req, res) => {
       .reduce((acc, product) => acc + product.total, 0)
       .toFixed(2);
     res.render("carts", {
-      style: "carts.css",
       cart,
     });
   } catch (error) {

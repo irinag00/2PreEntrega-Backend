@@ -12,7 +12,7 @@ async function createCart() {
     const data = await response.json();
     console.log(data);
 
-    if (data.status === "success") {
+    if (data.result === "success") {
       cartId = data.payload._id;
       sessionStorage.setItem("cartId", cartId);
       return cartId;
@@ -29,7 +29,6 @@ async function addProductToCart(productId) {
     if (!cartId) {
       cartId = await createCart();
     }
-
     const response = await fetch(`api/carts/${cartId}/products/${productId}`, {
       method: "POST",
       headers: {

@@ -45,7 +45,7 @@ export class CartManagerDB {
         throw new Error(`No se encontró el producto con id ${pid}`);
       }
 
-      const existingProduct = cartExist.product.find(
+      const existingProduct = cartExist.products.find(
         (product) => product.productId.toString() === pid.toString()
       );
 
@@ -53,7 +53,7 @@ export class CartManagerDB {
       if (existingProduct) {
         existingProduct.quantity++;
       } else {
-        cartExist.product.push({
+        cartExist.products.push({
           productId: pid,
           product: productExist,
           quantity: 1,
