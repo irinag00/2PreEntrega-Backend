@@ -38,21 +38,19 @@ export class CartManagerDB {
 
   async addToCart(cid, pid) {
     try {
-      let cartExist = await this.model.findOne({ _id: cid });
+      let cartExist = await this.model.findById({ _id: cid });
       const productExist = await productModel.findOne({ _id: pid });
-      console.log(cartExist);
 
       if (!productExist) {
         throw new Error(`No se encontró el producto con id ${pid}`);
       }
-      console.log(cartExist);
-      const existingProduct = cartExist.products.find(
+      const existingProduct = cartExist.products.findIndex(
         (product) => product.product.toString() === pid.toString()
       );
 
       //si existe el producto, le sumo cantidad y si no existe , lo agrego al carrito sumándole 1 cantidad
-      if (existingProduct) {
-        cartExist.quantity++;
+      if (existingProduct !== -1) {
+        cartExist.products[existingProduct].quantity++;
       } else {
         cartExist.products.push({ product: pid, quantity: 1 });
       }

@@ -25,7 +25,6 @@ viewsRouter.get("/carts/:cid", async (req, res) => {
         .status(404)
         .json({ response: "Error", message: "Cart not found" });
     }
-    const stringifiedCart = JSON.stringify(cart, null, "\t");
     res.render("carts", { cart });
   } catch (error) {
     res.status(500).json({ error: error.message });

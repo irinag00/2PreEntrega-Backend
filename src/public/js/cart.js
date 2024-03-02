@@ -15,6 +15,7 @@ async function createCart() {
     if (data.result === "success") {
       cartId = data.payload._id;
       sessionStorage.setItem("cartId", cartId);
+      console.log(cartId);
       return cartId;
     } else {
       throw new Error(data.error);
@@ -29,7 +30,7 @@ async function addProductToCart(productId) {
     if (!cartId) {
       cartId = await createCart();
     }
-    const response = await fetch(`api/carts/${cartId}/products/${productId}`, {
+    const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
