@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ProductManagerDB } from "../dao/managerDB/ProductManagerDB.js";
 import { CartManagerDB } from "../dao/managerDB/CartManagerDB.js";
+import { productModel } from "../dao/models/products.model.js";
 
 const viewsRouter = Router();
 const productManager = new ProductManagerDB();
@@ -19,19 +20,13 @@ viewsRouter.get("/carts/:cid", async (req, res) => {
   const { cid } = req.params;
   try {
     const cart = await cartManager.getCartById(cid);
-    const productsDetails = [];
-    for (const product of cart.products) {
-      const productDetails = await productModel
-        .findById(product.productId)
-        .lean();
-      const productWithQuantity = {
-        ...productDetails,
-        quantity: product.quantity,
-      };
-      productsDetails.push(productWithQuantity);
+    if (!cart) {
+      return res
+        .status(404)
+        .json({ response: "Error", message: "Cart not found" });
     }
-
-    console.log(productsDetails);
+    const stringifiedCart = JSON.stringify(cart, null, "\t");
+    res.render("carts", { cart });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

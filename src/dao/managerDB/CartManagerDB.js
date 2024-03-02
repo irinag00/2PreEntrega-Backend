@@ -8,7 +8,7 @@ export class CartManagerDB {
 
   async getCarts() {
     try {
-      return await this.model.find({}).populate("products");
+      return await this.model.find({}).lean();
     } catch (error) {
       console.error("Error al mostrar los productos", error);
       throw error;
@@ -17,7 +17,7 @@ export class CartManagerDB {
 
   async getCartById(cid) {
     try {
-      return await this.model.findOne({ _id: cid });
+      return await this.model.findById(cid).populate("products.product").lean();
     } catch (error) {
       console.error("Error al mostrar el productos seleccionado", error);
       throw error;
@@ -40,24 +40,21 @@ export class CartManagerDB {
     try {
       let cartExist = await this.model.findOne({ _id: cid });
       const productExist = await productModel.findOne({ _id: pid });
+      console.log(cartExist);
 
       if (!productExist) {
         throw new Error(`No se encontró el producto con id ${pid}`);
       }
-
+      console.log(cartExist);
       const existingProduct = cartExist.products.find(
-        (product) => product.productId.toString() === pid.toString()
+        (product) => product.product.toString() === pid.toString()
       );
 
       //si existe el producto, le sumo cantidad y si no existe , lo agrego al carrito sumándole 1 cantidad
       if (existingProduct) {
-        existingProduct.quantity++;
+        cartExist.quantity++;
       } else {
-        cartExist.products.push({
-          productId: pid,
-          product: productExist,
-          quantity: 1,
-        });
+        cartExist.products.push({ product: pid, quantity: 1 });
       }
 
       await cartExist.save();
@@ -76,8 +73,8 @@ export class CartManagerDB {
         throw new Error(`No se encontró el carrito con id ${cid}`);
       }
       //busco id de producto dentro del carrito
-      const productIndex = cart.product.findIndex(
-        (product) => product.productId.toString() === pid.toString()
+      const productIndex = cart.products.findIndex(
+        (product) => product.product.toString() === pid.toString()
       );
 
       if (productIndex === -1) {
@@ -86,14 +83,14 @@ export class CartManagerDB {
         );
       }
 
-      const existingProduct = cart.product.find(
-        (product) => product.productId.toString() === pid.toString()
+      const existingProduct = cart.products.find(
+        (product) => product.product.toString() === pid.toString()
       );
 
       if (existingProduct.quantity > 1) {
         existingProduct.quantity--;
       } else {
-        cart.product.splice(productIndex, 1);
+        cart.products.splice(productIndex, 1);
       }
 
       await cart.save();
