@@ -1,34 +1,45 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { dirname } from "path";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
-import chatRouter from "./routers/chatsDB.router.js";
-import { ChatManagerDB } from "./dao/managerDB/ChatManagerDB.js";
-import { chatModel } from "./dao/models/chats.model.js";
 import productRouter from "./routers/productsDB.router.js";
 import cartRouter from "./routers/cartsDB.router.js";
-import { ProductManagerDB } from "./dao/managerDB/ProductManagerDB.js";
 import viewsRouter from "./routers/viewsDB.router.js";
+import session from "express-session";
+import MongoStore from "connect-mongo";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = 8080;
+const mongoURL =
+  "mongodb+srv://adminCoder:hola123@codercluster.cxl0ika.mongodb.net/ecommerce?retryWrites=true&w=majority";
 
-const chatManager = new ChatManagerDB();
-const productManager = new ProductManagerDB();
+// const chatManager = new ChatManagerDB();
+// const productManager = new ProductManagerDB();
 
 //middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/public")));
 
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl: mongoURL,
+      ttl: 900,
+    }),
+    secret: "coderSecret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
 //routes
-app.use("/api/chat/", chatRouter);
 app.use("/api/products/", productRouter);
 app.use("/api/carts/", cartRouter);
 app.use("/", viewsRouter);
@@ -49,9 +60,7 @@ const io = new Server(httpServer);
 
 const environment = async () => {
   await mongoose
-    .connect(
-      "mongodb+srv://adminCoder:hola123@codercluster.cxl0ika.mongodb.net/ecommerce?retryWrites=true&w=majority"
-    )
+    .connect(mongoURL)
     .then(() => {
       console.log("Conexión a la base de datos inicializada!");
     })
