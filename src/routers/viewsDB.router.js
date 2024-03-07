@@ -7,10 +7,21 @@ const viewsRouter = Router();
 const productManager = new ProductManagerDB();
 const cartManager = new CartManagerDB();
 
+const sessionExist = (req, res, next) => {
+  if (req.session && req.session.user) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+};
+
+viewsRouter.use(sessionExist);
+
 viewsRouter.get("/products", async (req, res) => {
+  const user = req.session.user;
   try {
     const products = await productManager.getProducts(req);
-    res.render("products", { products });
+    res.render("products", { products, user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -29,6 +40,19 @@ viewsRouter.get("/carts/:cid", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+viewsRouter.get("/login", (req, res) => {
+  res.render("login");
+});
+
+viewsRouter.get("/register", (req, res) => {
+  res.render("register");
+});
+
+viewsRouter.get("/profile", (req, res) => {
+  const user = req.session.user;
+  res.render("profile", { user });
 });
 
 export default viewsRouter;

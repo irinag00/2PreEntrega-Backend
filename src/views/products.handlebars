@@ -6,6 +6,19 @@
   </head>
   <body>
     <h1>Lista de productos</h1>
+
+    <h2>Bienvenido {{user.first_name}} {{user.last_name}} ({{user.role}})</h2>
+
+    <div>
+      <form action="/api/sessions/logout" method="POST">
+        <button type="submit">Cerrar Sesión</button>
+      </form>
+
+      <button>
+        <a href="/profile">Ver mi perfil</a>
+      </button>
+    </div>
+
     <table>
       <thead>
         <tr>
