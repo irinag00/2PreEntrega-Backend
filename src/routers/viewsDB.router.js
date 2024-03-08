@@ -8,10 +8,25 @@ const productManager = new ProductManagerDB();
 const cartManager = new CartManagerDB();
 
 const sessionExist = (req, res, next) => {
-  if (req.session && req.session.user) {
+  if (
+    !req.session.user &&
+    (req.originalUrl === "/register" || req.originalUrl === "/login")
+  ) {
     next();
-  } else {
+  } else if (
+    req.session.user &&
+    (req.originalUrl === "/register" || req.originalUrl === "/login")
+  ) {
+    res.redirect("/products");
+  } else if (
+    !req.session.user &&
+    (req.originalUrl === "/profile" ||
+      req.originalUrl === "/products" ||
+      req.originalUrl.startsWith("/carts/"))
+  ) {
     res.redirect("/login");
+  } else {
+    next();
   }
 };
 

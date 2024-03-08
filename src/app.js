@@ -10,6 +10,7 @@ import cartRouter from "./routers/cartsDB.router.js";
 import viewsRouter from "./routers/viewsDB.router.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import sessionsRouter from "./routers/sessionsDB.router.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -42,6 +43,7 @@ app.use(
 //routes
 app.use("/api/products/", productRouter);
 app.use("/api/carts/", cartRouter);
+app.use("/api/sessions/", sessionsRouter);
 app.use("/", viewsRouter);
 
 //config handlebars

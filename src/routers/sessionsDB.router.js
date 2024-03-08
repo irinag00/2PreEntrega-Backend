@@ -67,3 +67,5 @@ sessionsRouter.post("/logout", async (req, res) => {
   req.session.destroy();
   res.redirect("/login");
 });
+
+export default sessionsRouter;
