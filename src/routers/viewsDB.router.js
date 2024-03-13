@@ -58,11 +58,15 @@ viewsRouter.get("/carts/:cid", async (req, res) => {
 });
 
 viewsRouter.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login", {
+    style: "login.css",
+  });
 });
 
 viewsRouter.get("/register", (req, res) => {
-  res.render("register");
+  res.render("register", {
+    style: "register.css",
+  });
 });
 
 viewsRouter.get("/profile", (req, res) => {

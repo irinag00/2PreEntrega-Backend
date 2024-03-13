@@ -5,32 +5,37 @@
     <title>Register</title>
   </head>
   <body>
-    <h1>Registrarse</h1>
-    <form action="/api/sessions/register" method="post">
-      <div>
-        <label for="first_name" id="firstName">Nombre</label>
-        <input type="text" name="first_name" id="first_name" required />
-      </div>
-      <div>
-        <label for="last_name" id="lastName">Apellido</label>
-        <input type="text" name="last_name" id="last_name" required />
-      </div>
-      <div>
-        <label for="email" id="email">Email</label>
-        <input type="email" name="email" id="email" required />
-      </div>
-      <div>
-        <label for="age" id="age">Edad</label>
-        <input type="number" name="age" id="age" required />
-      </div>
-      <div>
-        <label for="password" id="password">Contraseña</label>
-        <input type="password" name="password" id="password" required />
-      </div>
-      <div>
-        <button type="submit">Registrarme</button>
-        <p>Ya tienes una cuenta? <a href="/login">Inicia sesión</a></p>
-      </div>
-    </form>
+    <div class="register-page">
+      <form action="/api/sessions/register" method="post">
+        <h2>Registrarse</h2>
+        <div class="group">
+          <div>
+            <label for="first_name" id="firstName">Nombre</label>
+            <input type="text" name="first_name" id="first_name" required />
+          </div>
+          <div>
+            <label for="last_name" id="lastName">Apellido</label>
+            <input type="text" name="last_name" id="last_name" required />
+          </div>
+        </div>
+        <div>
+          <label for="age" id="age">Edad</label>
+          <input type="number" name="age" id="age" required />
+        </div>
+        <div>
+          <label for="email" id="email">Email</label>
+          <input type="email" name="email" id="email" required />
+        </div>
+        <div>
+          <label for="password" id="password">Contraseña</label>
+          <input type="password" name="password" id="password" required />
+        </div>
+        <div>
+          <button type="submit">Registrarme</button>
+          <p class="message">Ya tienes una cuenta?
+            <a href="/login">Inicia sesión</a></p>
+        </div>
+      </form>
+    </div>
   </body>
 </html>
