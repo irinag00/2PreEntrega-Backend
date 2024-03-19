@@ -11,6 +11,8 @@ import viewsRouter from "./routers/viewsDB.router.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import sessionsRouter from "./routers/sessionsDB.router.js";
+import initializePassport from "./config/passport.config.js";
+import passport from "passport";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,9 +21,6 @@ const app = express();
 const PORT = 8080;
 const mongoURL =
   "mongodb+srv://adminCoder:hola123@codercluster.cxl0ika.mongodb.net/ecommerce?retryWrites=true&w=majority";
-
-// const chatManager = new ChatManagerDB();
-// const productManager = new ProductManagerDB();
 
 //middlewares
 app.use(express.json());
@@ -50,6 +49,11 @@ app.use("/", viewsRouter);
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
+
+//config passport
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 //connection socket.io
 
