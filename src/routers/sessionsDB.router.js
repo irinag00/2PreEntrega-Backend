@@ -34,6 +34,30 @@ sessionsRouter.post(
   }
 );
 
+sessionsRouter.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user:email"] }),
+  async (req, res) => {}
+);
+
+sessionsRouter.get(
+  "/githubcallback",
+  passport.authenticate("github", { failureRedirect: "/login" }),
+  async (req, res) => {
+    const { user } = req;
+    if (user) {
+      req.session.user = {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        age: user.age,
+        role: "user",
+      };
+      res.redirect("/products");
+    }
+  }
+);
+
 sessionsRouter.get("/failRegister", (req, res) => {
   res.status(400).send({ error: "Fallo en el registro" });
 });
