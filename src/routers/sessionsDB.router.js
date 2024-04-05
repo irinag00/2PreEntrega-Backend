@@ -1,74 +1,82 @@
 import { Router } from "express";
 import { userModel } from "../dao/models/users.model.js";
 import passport from "passport";
+import { CustomRouter } from "./custom.router.js";
+import { generateToken } from "../utils.js";
 
 const sessionsRouter = Router();
 
-sessionsRouter.post(
-  "/register",
-  passport.authenticate("register", { failureRedirect: "/failRegister" }),
-  async (req, res) => {
-    res.redirect("/login");
+export class SessionRouter extends CustomRouter {
+  init() {
+    this.post(
+      "/register",
+      ["PUBLIC"],
+      this.passportAuthentication("register"),
+      (req, res) => {
+        res.sendSuccessMessage("Usuario registrado con éxito!");
+      }
+    );
+    this.post(
+      "/login",
+      ["PUBLIC"],
+      this.passportAuthentication("login"),
+      (req, res) => {
+        generateToken(res, req.user);
+        res.sendSuccessMessage("Sesión iniciada con éxito!");
+      }
+    );
+    this.get(
+      "/github",
+      ["PUBLIC"],
+      passport.authenticate("github", { scope: ["user:email"] }),
+      async (req, res) => {}
+    );
+    this.get(
+      "/githubcallback",
+      ["PUBLIC"],
+      this.passportAuthentication("github"),
+      (req, res) => {
+        generateToken(res, req.user);
+        res.redirect("/products");
+      }
+    );
+    this.get(
+      "/current",
+      ["AUTHENTICATED"],
+      this.passportAuthentication("current"),
+      (req, res) => {
+        res.sendSuccessMessage(req.user);
+      }
+    );
+    this.post("/logout", ["AUTHENTICATED"], (req, res) => {
+      res.clearCookie("token");
+      res.sendSuccessMessage("Sesión cerrada con éxito!");
+    });
   }
-);
-
-sessionsRouter.post(
-  "/login",
-  passport.authenticate("login", { failureRedirect: "/failLogin" }),
-  async (req, res) => {
-    const { user } = req;
-    if (user) {
-      req.session.user = {
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
-        age: user.age,
-        role: "user",
-      };
-    } else {
-      return res
-        .status(400)
-        .send({ status: "error", error: "invalid credentials" });
-    }
-    res.redirect("/products");
+  passportAuthentication(strategy) {
+    return async (req, res, next) => {
+      passport.authenticate(
+        strategy,
+        { session: false },
+        (error, user, info) => {
+          if (error) {
+            return res.sendServerError(error.message);
+          }
+          if (!user) {
+            return res.sendUserError(info);
+          }
+          req.user = {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            age: user.age,
+            cart: user.cart,
+            role: user.role,
+          };
+          next();
+        }
+      )(req, res, next);
+    };
   }
-);
-
-sessionsRouter.get(
-  "/github",
-  passport.authenticate("github", { scope: ["user:email"] }),
-  async (req, res) => {}
-);
-
-sessionsRouter.get(
-  "/githubcallback",
-  passport.authenticate("github", { failureRedirect: "/login" }),
-  async (req, res) => {
-    const { user } = req;
-    if (user) {
-      req.session.user = {
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
-        age: user.age,
-        role: "user",
-      };
-      res.redirect("/products");
-    }
-  }
-);
-
-sessionsRouter.get("/failRegister", (req, res) => {
-  res.status(400).send({ error: "Fallo en el registro" });
-});
-
-sessionsRouter.get("/failLogin", (req, res) => {
-  res.status(400).send({ error: "Fallo al iniciar sesión" });
-});
-
-sessionsRouter.post("/logout", async (req, res) => {
-  req.session.destroy();
-  res.redirect("/login");
-});
-
-export default sessionsRouter;
+}

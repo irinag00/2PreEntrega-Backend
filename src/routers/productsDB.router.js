@@ -1,76 +1,89 @@
 import { Router } from "express";
 import { ProductManagerDB } from "../dao/managerDB/ProductManagerDB.js";
+import { CustomRouter } from "./custom.router.js";
 
 const productRouter = Router();
 const productManager = new ProductManagerDB();
 
-productRouter.get("/", async (req, res) => {
-  try {
-    const products = await productManager.getProducts(req);
-    res.json({
-      status: "success",
-      payload: products.docs,
-      totalPages: products.totalPages,
-      prevPage: products.prevPage,
-      nextPage: products.nextPage,
-      page: products.page,
-      hasPrevPage: products.hasPrevPage,
-      hasNextPage: products.hasNextPage,
-      prevLink: products.prevLink,
-      nextLink: products.nextLink,
+export class ProductRouter extends CustomRouter {
+  init() {
+    this.getRouter().param("pid", async (req, res, next, id) => {
+      if (id.lenght !== 24) {
+        return res.sendUserError("El id del carrito es inválido.");
+      }
+      try {
+        const result = await productManager.getProductById(id);
+        if (!result) {
+          return res.sendUserError(
+            `No se encontró el producto seleccionado con id: ${id}`
+          );
+        }
+        next();
+      } catch (error) {
+        res.sendServerError(error.message);
+      }
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
-productRouter.get("/:pid", async (req, res) => {
-  const { pid } = req.params;
-  try {
-    let result = await productManager.getProductById(pid);
-    res.status(200).send({ result: "success", payload: result });
-  } catch (error) {
-    res
-      .status(400)
-      .send({ result: "Error al cargar el producto elegido", message: error });
-  }
-});
+    this.get("/", ["PUBLIC"], async (req, res) => {
+      try {
+        const queryParams = req.query;
+        const products = await productManager.getProducts(queryParams);
+        const result = {
+          products: products.docs,
+          totalPages: products.totalPages,
+          prevPage: products.prevPage,
+          nextPage: products.nextPage,
+          page: products.page,
+          hasPrevPage: products.hasPrevPage,
+          hasNextPage: products.hasNextPage,
+          prevLink: products.prevLink,
+          nextLink: products.nextLink,
+        };
+        res.sendSuccessPayload(result);
+      } catch (error) {
+        res.sendServerError(error.message);
+      }
+    });
 
-productRouter.post("/", async (req, res) => {
-  const newProduct = req.body;
-  try {
-    let result = await productManager.addProduct(newProduct);
-    res.status(200).send({ result: "success", payload: result });
-  } catch (error) {
-    res
-      .status(400)
-      .send({ result: "Error al enviar el nuevo producto", message: error });
-  }
-});
+    this.get("/:pid", ["PUBLIC"], async (req, res) => {
+      try {
+        const pid = req.params.pid;
+        const result = await productManager.getProductById(pid);
+        res.sendSuccessPayload(result);
+      } catch (error) {
+        res.sendServerError(error.message);
+      }
+    });
 
-productRouter.put("/:pid", async (req, res) => {
-  const { pid } = req.params;
-  const updatedProduct = req.body;
-  try {
-    let result = await productManager.updateProduct(pid, updatedProduct);
-    res.status(200).send({ result: "success", payload: result });
-  } catch (error) {
-    res
-      .status(400)
-      .send({ result: "Error al editar el producto", message: error });
-  }
-});
+    this.post("/", ["PUBLIC"], async (req, res) => {
+      try {
+        const newProduct = req.body;
+        const result = await productManager.addProduct(newProduct);
+        res.sendSuccessPayload(result);
+      } catch (error) {
+        res.sendServerError(error.message);
+      }
+    });
 
-productRouter.delete("/:pid", async (req, res) => {
-  const { pid } = req.params;
-  try {
-    let result = await productManager.deleteProduct(pid);
-    res.status(200).send({ result: "success", payload: result });
-  } catch (error) {
-    res
-      .status(400)
-      .send({ result: "Error al eliminar el producto", message: error });
-  }
-});
+    this.put("/:pid", ["PUBLIC"], async (req, res) => {
+      try {
+        const pid = req.params.pid;
+        const updatedProduct = req.body;
+        const result = await productManager.updateProduct(pid, updatedProduct);
+        res.sendSuccessPayload(result);
+      } catch (error) {
+        res.sendServerError(error.message);
+      }
+    });
 
-export default productRouter;
+    this.delete("/:pid", ["PUBLIC"], async (req, res) => {
+      try {
+        const pid = req.params.pid;
+        const result = await productManager.deleteProduct(pid);
+        res.sendSuccessPayload(result);
+      } catch (error) {
+        res.sendServerError(error.message);
+      }
+    });
+  }
+}

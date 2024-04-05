@@ -4,19 +4,22 @@ import githubStrategy from "passport-github2";
 import jwt from "passport-jwt";
 import { userModel } from "../dao/models/users.model.js";
 import { createHash, isValidPassword } from "../utils.js";
+import { UserManager } from "../dao/managerDB/UserManagerDB.js";
 
 const localStrategy = local.Strategy;
 const JWTStrategy = jwt.Strategy;
 const extractJWT = jwt.ExtractJwt;
+const userManager = new UserManager();
+
+const cookieExtractor = (req) => {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies["cookieToken"];
+  }
+  return token;
+};
 
 const initializePassport = () => {
-  const cookieExtractor = (req) => {
-    let token = null;
-    if (req && req.cookies) {
-      token = req.cookies["cookieToken"];
-    }
-    return token;
-  };
   passport.use(
     "register",
     new localStrategy(
@@ -27,21 +30,21 @@ const initializePassport = () => {
           if (!first_name || !last_name || !email || !age || !password) {
             return done(null, false, { message: "Faltan campos obligatorios" });
           }
-          const user = await userModel.findOne({ email: username });
+          const user = await userManager.getUserByEmail(username);
           if (user) {
             return done(null, false, {
               message: "El usuario ya está registrado",
             });
           }
-          const newUser = {
+          user = await userManager.createUser({
             first_name,
             last_name,
-            email,
+            email: username,
             age,
-            password: createHash(password),
-          };
-          const result = await userModel.create(newUser);
-          return done(null, result);
+            password,
+          });
+
+          return done(null, user);
         } catch (error) {
           return done(null, false, { message: "Error al registrarse" });
         }
@@ -55,7 +58,13 @@ const initializePassport = () => {
       { usernameField: "email", passReqToCallback: true },
       async (req, username, password, done) => {
         try {
-          const user = await userModel.findOne({ email: username });
+          const { email, password } = req.body;
+          if (!email || !password) {
+            return done(null, false, {
+              message: "Falta completar campos obligatorios",
+            });
+          }
+          const user = await userManager.getUserByEmail(username);
           if (!user) {
             return done(null, false, { message: "El usuario no existe" });
           }
@@ -83,17 +92,14 @@ const initializePassport = () => {
       async (accessToken, refreshToken, profile, done) => {
         console.log(profile._json);
         try {
-          const user = await userModel.findOne({ email: profile._json.email });
+          const user = await userManager.getUserByEmail(profile._json.email);
           if (!user) {
-            let newUser = {
+            user = {
               first_name: profile._json.name,
-              last_name: "",
               email: profile._json.email,
-              age: 20,
-              password: "",
             };
-            let createdUser = await userModel.create(newUser);
-            return done(null, createdUser);
+            user = await userManager.createUser(user);
+            return done(null, user);
           } else {
             return done(null, user);
           }
