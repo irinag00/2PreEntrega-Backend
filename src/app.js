@@ -32,20 +32,23 @@ const mongoURL =
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/public")));
-app.use(cookieParser("MySecretKey"));
+app.use(cookieParser());
 
-app.use(
-  session({
-    store: MongoStore.create({
-      mongoUrl: mongoURL,
-      ttl: 900,
-    }),
-    secret: "coderSecret",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+// app.use(
+//   session({
+//     store: MongoStore.create({
+//       mongoUrl: mongoURL,
+//       ttl: 900,
+//     }),
+//     secret: "coderSecret",
+//     resave: false,
+//     saveUninitialized: false,
+//   })
+// );
 
+//config passport
+initializePassport();
+app.use(passport.initialize());
 //routes
 app.use("/api/products/", productRouter.getRouter());
 app.use("/api/carts/", cartRouter.getRouter());
@@ -57,10 +60,7 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
-//config passport
-initializePassport();
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 //connection socket.io
 

@@ -1,4 +1,5 @@
-import { userModel } from "../models/users.model";
+import { createHash } from "../../utils.js";
+import { userModel } from "../models/users.model.js";
 
 export class UserManager {
   constructor() {
@@ -13,6 +14,7 @@ export class UserManager {
   }
   async createUser(user) {
     try {
+      console.log(user);
       if (user.password && user.password.length > 0) {
         user.password = createHash(user.password);
       }
@@ -22,6 +24,7 @@ export class UserManager {
       const data = await response.json();
       const cart = data.payload;
       user.cart = cart._id;
+      console.log(data.payload);
       return await this.model.create(user);
     } catch (error) {
       throw error;

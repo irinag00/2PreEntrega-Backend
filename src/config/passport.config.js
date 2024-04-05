@@ -26,11 +26,11 @@ const initializePassport = () => {
       { passReqToCallback: true, usernameField: "email" },
       async (req, username, password, done) => {
         try {
-          const { first_name, last_name, email, age } = req.body;
-          if (!first_name || !last_name || !email || !age || !password) {
+          const { first_name, last_name, age } = req.body;
+          if (!first_name || !last_name || !username || !age || !password) {
             return done(null, false, { message: "Faltan campos obligatorios" });
           }
-          const user = await userManager.getUserByEmail(username);
+          let user = await userManager.getUserByEmail(username);
           if (user) {
             return done(null, false, {
               message: "El usuario ya está registrado",
@@ -92,7 +92,7 @@ const initializePassport = () => {
       async (accessToken, refreshToken, profile, done) => {
         console.log(profile._json);
         try {
-          const user = await userManager.getUserByEmail(profile._json.email);
+          let user = await userManager.getUserByEmail(profile._json.email);
           if (!user) {
             user = {
               first_name: profile._json.name,

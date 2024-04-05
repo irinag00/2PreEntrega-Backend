@@ -1,10 +1,6 @@
-import { Router } from "express";
-import { userModel } from "../dao/models/users.model.js";
 import passport from "passport";
 import { CustomRouter } from "./custom.router.js";
 import { generateToken } from "../utils.js";
-
-const sessionsRouter = Router();
 
 export class SessionRouter extends CustomRouter {
   init() {
@@ -14,6 +10,7 @@ export class SessionRouter extends CustomRouter {
       this.passportAuthentication("register"),
       (req, res) => {
         res.sendSuccessMessage("Usuario registrado con éxito!");
+        res.redirect("/products");
       }
     );
     this.post(
@@ -36,6 +33,7 @@ export class SessionRouter extends CustomRouter {
       ["PUBLIC"],
       this.passportAuthentication("github"),
       (req, res) => {
+        console.log(req.user);
         generateToken(res, req.user);
         res.redirect("/products");
       }
